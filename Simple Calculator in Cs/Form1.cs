@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,13 +14,12 @@ namespace Simple_Calculator_in_Cs
 {
     public partial class Form1 : Form
     {
-        Stack<int> valueStack;
+        Stack<double> valueStack;
         Stack<char> operatorStack;
-        static int counter = 0;
         public Form1()
         {
             InitializeComponent();
-            valueStack = new Stack<int>();
+            valueStack = new Stack<double>();
             operatorStack = new Stack<char>();
         }
 
@@ -85,31 +85,33 @@ namespace Simple_Calculator_in_Cs
 
         private void addBtn_Click(object sender, EventArgs e)
         {
-            screenCB.SelectedText = " + ";
+            screenCB.SelectedText = "+";
             operatorStack.Push('+');
         }
 
         private void subBtn_Click(object sender, EventArgs e)
         {
-            screenCB.SelectedText = " - ";
+            screenCB.SelectedText = "-";
             operatorStack.Push('-');
         }
 
         private void multBtn_Click(object sender, EventArgs e)
         {
-            screenCB.SelectedText = " * ";
+            screenCB.SelectedText = "*";
             operatorStack.Push('*');
         }
 
         private void divBtn_Click(object sender, EventArgs e)
         {
-            screenCB.SelectedText = " / ";
+            screenCB.SelectedText = "/";
             operatorStack.Push('/');
         }
 
         private void clearBtn_Click(object sender, EventArgs e)
         {
             screenCB.Clear();
+            valueStack.Clear();
+            operatorStack.Clear();
         }
 
         private void equalsBtn_Click(object sender, EventArgs e)
@@ -119,11 +121,48 @@ namespace Simple_Calculator_in_Cs
 
         private bool isEmpty()
         {
-            if(operatorStack.Count != 0)
+            IList<double> list = new List<double>();
+            if (operatorStack.Count != 0)
             {
+                string[] numbers = Regex.Split(screenCB.Text, @"[^\d\.]");
+                
+                foreach (string value in numbers)
+                {
+
+                    if (!string.IsNullOrEmpty(value))
+                    {
+
+                        list.Add(Double.Parse(value));
+
+                    }
+
+                }
+
                 char op = operatorStack.Pop();
-                int num2 = valueStack.Pop();
-                int num1 = valueStack.Pop();
+                double num2 = valueStack.Pop();
+
+                int count = 1;
+                for(int i = valueStack.Count; i > -1; i--)
+                {
+     
+                    if (list[1].Equals(num2)) break;
+
+                    num2 += valueStack.Pop() * Math.Pow(10, count);
+                    count++;
+
+                }
+
+                double num1 = valueStack.Pop();
+                count = 1;
+                for(int i = valueStack.Count; i > -1; i--)
+                {
+
+                    if (list[0].Equals(num1)) break;
+
+                    num1 += valueStack.Pop() * Math.Pow(10, count);
+                    count++;
+
+                }
                 screenCB.Clear();
 
                 switch (op)
@@ -145,40 +184,42 @@ namespace Simple_Calculator_in_Cs
                         break;
                 }
 
+                list.Clear();
+
                 return false;
             }
 
             return true;
         }
 
-        private void calculatorAdd(int num1, int num2)
+        private void calculatorAdd(double num1, double num2)
         {
 
-            int sum = num1 + num2;
+            double sum = num1 + num2;
             screenCB.SelectedText = sum.ToString();
             valueStack.Push(sum);
 
         }
-        private void calculatorSub(int num1, int num2)
+        private void calculatorSub(double num1, double num2)
         {
 
-            int sum = num1 - num2;
+            double sum = num1 - num2;
             screenCB.SelectedText = sum.ToString();
             valueStack.Push(sum);
 
         }
-        private void calculatorMult(int num1, int num2)
+        private void calculatorMult(double num1, double num2)
         {
 
-            int sum = num1 * num2;
+            double sum = num1 * num2;
             screenCB.SelectedText = sum.ToString();
             valueStack.Push(sum);
 
         }
-        private void calculatorDiv(int num1, int num2)
+        private void calculatorDiv(double num1, double num2)
         {
 
-            int sum = num1 / num2;
+            double sum = num1 / num2;
             screenCB.SelectedText = sum.ToString();
             valueStack.Push(sum);
 
