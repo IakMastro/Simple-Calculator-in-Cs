@@ -228,6 +228,7 @@
             this.equalsBtn.TabIndex = 5;
             this.equalsBtn.Text = "=";
             this.equalsBtn.UseVisualStyleBackColor = true;
+            this.equalsBtn.Click += new System.EventHandler(this.equalsBtn_Click);
             // 
             // clearBtn
             // 
