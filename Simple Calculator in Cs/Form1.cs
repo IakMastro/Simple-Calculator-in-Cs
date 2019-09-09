@@ -16,5 +16,6 @@ namespace Simple_Calculator_in_Cs
         {
             InitializeComponent();
         }
+
     }
 }
